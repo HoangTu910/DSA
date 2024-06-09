@@ -1,0 +1,4 @@
+3
+1 9 Nguyen_Van_A 
+2 6 Nguyen_Van_B 
+3 10 Nguyen_Van_C 
