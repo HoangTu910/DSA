@@ -1,3 +1,14 @@
+void Add_Last(LIST &l, NODE* new_ele){
+    if(l.first == NULL){
+        l.first = new_ele;
+        l.last = l.first;   
+    }
+    else{
+        l.last->link = new_ele;
+        l.last = new_ele;
+    }
+}
+
 void Init_List(List &l){
     l.first = l.last = NULL;
 }
