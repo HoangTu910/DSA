@@ -1,11 +1,11 @@
-void Add_Last(LIST &l, NODE* new_ele){
-    if(l.first == NULL){
+void Add_Last(List &l, Node* new_ele){
+    if (l.first == NULL) {
         l.first = new_ele;
-        l.last = l.first;   
-    }
-    else{
-        l.last->link = new_ele;
         l.last = new_ele;
+    } else {
+        new_ele->next = l.first;
+        l.first->prev = new_ele;
+        l.first = new_ele;
     }
 }
 
@@ -13,79 +13,73 @@ void Init_List(List &l){
     l.first = l.last = NULL;
 }
 
-int getMaxElement(List list) {
-    int max = list.first->data.diemTrungBinh; 
-    Node* current = list.first->next; 
-    while (current != NULL) {
-        if (current->data.diemTrungBinh > max) {
-            max = current->data.diemTrungBinh; 
-        }
-        current = current->next; 
+// Get the maximum element in the list
+int getMaxElement(List &list) {
+    int maxVal = list.first->data.diemTrungBinh; // Replace with actual data structure as needed
+    for (Node* current = list.first; current; current = current->next) {
+        if (current->data.diemTrungBinh > maxVal)
+            maxVal = current->data.diemTrungBinh;
     }
-    return max;
+    return maxVal;
 }
 
-int getNumbofDigit(int num) {
-    if (num == 0) {
-        return 1;
+// Get the number of digits in the maximum element
+int getNumbofDigit(int number) {
+    int digits = 0;
+    while (number) {
+        number /= 10;
+        digits++;
     }
-    int count = 0;
-    while (num != 0) {
-        num /= 10; 
-        count++;    
-    } 
-    return count;
+    return digits;
 }
 
-int GetDigit(unsigned long N, int k) { 
-	switch (k) 
-	{ 
-        case 0: return (N % 10); 
-        case 1: return ((N/10) % 10); 
-        case 2: return ((N/100) % 10); 
-        case 3: return ((N/1000) % 10); 
-        case 4: return ((N/10000) % 10); 
-        case 5: return ((N/100000) % 10); 
-        case 6: return ((N/1000000) % 10); 
-        case 7: return ((N/10000000) % 10); 
-        case 8: return ((N/100000000) % 10); 
-        case 9: return ((N/1000000000) % 10);
-        default: break; 
-	} 
+// Get the k-th digit of a number
+int GetDigit(int number, int k) {
+    while (k--) {
+        number /= 10;
+    }
+    return number % 10;
 }
 
-void ListRadixSort(List &iList){
-    List B[10];
-    Node* p;
-    int i, k;
-    if(iList.first == NULL || iList.first == iList.last){
-        return; 
+// Radix sort implementation for the list
+void ListRadixSort(List &inputList) {
+    List buckets[10]; // Array of buckets for radix sort
+    Node* currentNode;
+    int digitValue, numDigits, maxElement, i, digitIndex;
+
+    if (inputList.first == nullptr || inputList.first == inputList.last) {
+        return; // List is empty or has only one element
     }
-    int max = getMaxElement(iList);
-    int m = getNumbofDigit(max);
-    for(i = 0; i < 10; ++i){
-        Init_List(B[i]);
+
+    maxElement = getMaxElement(inputList); // Find the maximum element
+    numDigits = getNumbofDigit(maxElement); // Get the number of digits in the maximum element
+
+    for (i = 0; i < 10; ++i) {
+        Init_List(buckets[i]);
     }
-    for(k = 0; k < m; ++k){
-        for(i = 0; i < 10; ++i){
-            Init_List(B[i]);
+
+    for (digitIndex = 0; digitIndex < numDigits; ++digitIndex) {
+        for (i = 0; i < 10; ++i) {
+            Init_List(buckets[i]);
         }
-        while(iList.first){
-            p = iList.first;
-            iList.first = p->next;
-            p->next = NULL;
-            i = GetDigit(p->data.diemTrungBinh, k);
-            Add_Last(B[i], p);
+
+        while (inputList.first) {
+            currentNode = inputList.first;
+            inputList.first = currentNode->next;
+            currentNode->next = nullptr;
+            digitValue = GetDigit(currentNode->data.diemTrungBinh, digitIndex);
+            Add_Last(buckets[digitValue], currentNode);
         }
-        iList.first = NULL; 
-        for(i = 0; i < 10; ++i){
-            if(B[i].first != NULL){ 
-                if(iList.first == NULL){ 
-                    iList.first = B[i].first;
-                    iList.last = B[i].last;
-                } else { 
-                    iList.last->next = B[i].first;
-                    iList.last = B[i].last;
+
+        inputList.first = nullptr;
+        for (i = 0; i < 10; ++i) {
+            if (buckets[i].first != nullptr) {
+                if (inputList.first == nullptr) {
+                    inputList.first = buckets[i].first;
+                    inputList.last = buckets[i].last;
+                } else {
+                    inputList.last->next = buckets[i].first;
+                    inputList.last = buckets[i].last;
                 }
             }
         }
