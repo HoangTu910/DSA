@@ -1,11 +1,15 @@
-int getMaxElement(LIST list) {
-    int max = list.first->data.id; 
-    NODE* current = list.first->link; 
+void Init_List(List &l){
+    l.first = l.last = NULL;
+}
+
+int getMaxElement(List list) {
+    int max = list.first->data.diemTrungBinh; 
+    Node* current = list.first->next; 
     while (current != NULL) {
-        if (current->data.id > max) {
-            max = current->data.id; 
+        if (current->data.diemTrungBinh > max) {
+            max = current->data.diemTrungBinh; 
         }
-        current = current->link; 
+        current = current->next; 
     }
     return max;
 }
@@ -39,9 +43,9 @@ int GetDigit(unsigned long N, int k) {
 	} 
 }
 
-void ListRadixSort(LIST &iList){
-    LIST B[10];
-    NODE* p;
+void ListRadixSort(List &iList){
+    List B[10];
+    Node* p;
     int i, k;
     if(iList.first == NULL || iList.first == iList.last){
         return; 
@@ -57,9 +61,9 @@ void ListRadixSort(LIST &iList){
         }
         while(iList.first){
             p = iList.first;
-            iList.first = p->link;
-            p->link = NULL;
-            i = GetDigit(p->data.id, k);
+            iList.first = p->next;
+            p->next = NULL;
+            i = GetDigit(p->data.diemTrungBinh, k);
             Add_Last(B[i], p);
         }
         iList.first = NULL; 
@@ -69,7 +73,7 @@ void ListRadixSort(LIST &iList){
                     iList.first = B[i].first;
                     iList.last = B[i].last;
                 } else { 
-                    iList.last->link = B[i].first;
+                    iList.last->next = B[i].first;
                     iList.last = B[i].last;
                 }
             }
